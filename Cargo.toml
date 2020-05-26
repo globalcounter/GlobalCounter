@@ -1,0 +1,29 @@
+[package]
+name = "global-counter"
+publish = false
+version = "0.0.0"
+description = "An Android fun app which allows users to increase/decrease a global counter value simultaneously."
+homepage = "https://github.com/globalcounter/GlobalCounter"
+repository = "https://github.com/globalcounter/GlobalCounter"
+keywords = ["global", "counter", "fun", "android", "rust"]
+authors = ["Rousan Ali <hello@rousan.io>"]
+readme = "README.md"
+license = "MIT"
+edition = "2018"
+
+[lib]
+name = "globalcounter"
+crate-type = ["cdylib"]
+path="app/src/main/rust/lib.rs"
+
+[profile.release]
+lto = true
+
+[dependencies]
+log = "0.4"
+jni = "0.16"
+tokio = { version = "0.2", features = ["rt-threaded", "rt-core", "io-driver", "time", "net", "tcp", "io-util", "stream", "blocking", "sync"] }
+android_logger = "0.8"
+lazy_static = "1.4"
+sendify = "1.1"
+num_cpus = "1.13.0"

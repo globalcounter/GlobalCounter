@@ -1,0 +1,23 @@
+tasks:
+  setup:
+    run:
+      - command: cargo install cargo-watch
+  dev:
+    run:
+      - command: cargo watch --watch ./app/src/main/rust -s "sh ./scripts/build.dev.sh"
+  check:dev:
+    run:
+      - command: cargo watch --watch ./app/src/main/rust -x "check"
+  build:prod:
+    run:
+      - command: sh ./scripts/build.prod.sh
+  jni:
+    run:
+      - command: sh ./scripts/gen.jni.sh
+  log:
+    run:
+      - command: tusk log:clear
+      - command: adb logcat -s "global-counter"
+  log:clear:
+    run:
+      - command: adb logcat -c
