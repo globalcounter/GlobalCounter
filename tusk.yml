@@ -1,7 +1,9 @@
 tasks:
   setup:
     run:
+      - command: cargo install --version 0.1.16 cross
       - command: cargo install cargo-watch
+      - command: brew install pidcat
   dev:
     run:
       - command: cargo watch --watch ./app/src/main/rust -s "sh ./scripts/build.dev.sh"
@@ -16,8 +18,10 @@ tasks:
       - command: sh ./scripts/gen.jni.sh
   log:
     run:
-      - command: tusk log:clear
-      - command: adb logcat -s "global-counter"
-  log:clear:
+      - command: pidcat -c io.rousan.globalcounter
+  log:d:
+    args:
+      device:
+        usage: The device serial number
     run:
-      - command: adb logcat -c
+      - command: pidcat -s ${device} -c io.rousan.globalcounter

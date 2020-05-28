@@ -5,8 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 
-import io.rousan.globalcounter.utils.Utils;
-
 public class Bridge {
     static {
         System.loadLibrary("globalcounter");

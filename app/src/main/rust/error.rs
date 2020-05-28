@@ -8,6 +8,10 @@ impl Error {
     pub fn new<M: Into<String>>(msg: M) -> Self {
         Error { msg: msg.into() }
     }
+
+    pub fn into_message(self) -> String {
+        self.msg
+    }
 }
 
 impl Display for Error {

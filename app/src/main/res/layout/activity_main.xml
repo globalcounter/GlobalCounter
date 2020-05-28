@@ -5,8 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
+    android:id="@+id/root"
     tools:context=".activities.MainActivity">
-
 
     <LinearLayout
         android:layout_width="wrap_content"

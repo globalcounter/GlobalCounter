@@ -16,12 +16,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import androidx.appcompat.app.AppCompatActivity;
 import io.rousan.globalcounter.R;
 import io.rousan.globalcounter.bridge.MessageData;
 import io.rousan.globalcounter.message.What;
 import io.rousan.globalcounter.services.WorkerService;
-import io.rousan.globalcounter.utils.Utils;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
     public static final int WHAT_SET_REPLY_MESSENGER = Integer.MAX_VALUE;
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onBridgeMessage(int what, MessageData data) {
-        Utils.log(String.format("Got a message: what: %s", What.toString(what)));
+        Timber.i("Got a message: what: %s", What.toString(what) );
 
         switch (what) {
             case What.COUNTER_VALUE: {
@@ -52,19 +54,17 @@ public class MainActivity extends AppCompatActivity {
                         tv.setText(counter_value);
                     }
                 });
+                return;
             }
-        }
-    }
-
-    public void sendMessage(int what, MessageData data) {
-        if (isBoundWithService) {
-            Message msg = Message.obtain(null, what);
-            msg.setData(data.getData());
-
-            try {
-                sendMessenger.send(msg);
-            } catch (RemoteException exp) {
-                Utils.log(exp);
+            case What.ERROR: {
+                final String msg = data.getString("msg");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showSnackbar(msg);
+                    }
+                });
+                return;
             }
         }
     }
@@ -77,10 +77,34 @@ public class MainActivity extends AppCompatActivity {
         sendMessage(What.DECREASE_COUNTER, MessageData.empty());
     }
 
+    public void sendMessage(int what, MessageData data) {
+        if (isBoundWithService) {
+            Message msg = Message.obtain(null, what);
+            msg.setData(data.getData());
+
+            try {
+                sendMessenger.send(msg);
+            } catch (RemoteException exp) {
+                Timber.i(exp);
+            }
+        }
+    }
+
+    public void showSnackbar(String msg) {
+        final Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction("Close", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        });
+        snackbar.show();
+    }
+
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Utils.log("Connected with service");
+            Timber.i("Connected with service");
 
             sendMessenger = new Messenger(service);
             receiveMessenger = new Messenger(new IncomingHandler(MainActivity.this));
@@ -91,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 msg.replyTo = receiveMessenger;
                 sendMessenger.send(msg);
             } catch (RemoteException exp) {
-                Utils.log(exp);
+                Timber.e(exp);
             }
 
             sendMessage(What.INITIATE, MessageData.empty());
@@ -99,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            Utils.log("Disconnected with service");
+            Timber.i("Disconnected with service");
 
             sendMessenger = null;
             receiveMessenger = null;
@@ -131,7 +155,6 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_about) {
-            Utils.log("About menu clicked");
             return true;
         }
 

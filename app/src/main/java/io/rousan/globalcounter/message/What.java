@@ -5,6 +5,7 @@ public final class What {
     public final static int COUNTER_VALUE = 1;
     public final static int INCREASE_COUNTER = 2;
     public final static int DECREASE_COUNTER = 3;
+    public final static int ERROR = 4;
 
     public static String toString(int what) {
         switch (what) {
@@ -19,6 +20,9 @@ public final class What {
             }
             case DECREASE_COUNTER: {
                 return "DECREASE_COUNTER";
+            }
+            case ERROR: {
+                return "ERROR";
             }
             default: {
                 return "<UNKNOWN>";

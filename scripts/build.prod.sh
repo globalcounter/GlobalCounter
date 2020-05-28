@@ -2,9 +2,9 @@
 
 JNI_LIBS_DIR=./app/libs
 
-cargo build --target aarch64-linux-android --release
-cargo build --target armv7-linux-androideabi --release
-cargo build --target i686-linux-android --release
+cross build --target aarch64-linux-android --release
+cross build --target armv7-linux-androideabi --release
+cross build --target i686-linux-android --release
 
 rm -rf $JNI_LIBS_DIR
 mkdir $JNI_LIBS_DIR

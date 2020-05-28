@@ -12,7 +12,7 @@ import android.os.RemoteException;
 import io.rousan.globalcounter.activities.MainActivity;
 import io.rousan.globalcounter.bridge.Bridge;
 import io.rousan.globalcounter.bridge.MessageData;
-import io.rousan.globalcounter.utils.Utils;
+import timber.log.Timber;
 
 public class WorkerService extends Service {
     private Bridge bridge;
@@ -40,26 +40,26 @@ public class WorkerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Utils.log("Worker Service created");
+        Timber.i("Worker Service created");
         this.bridge.start();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Utils.log("Worker Service onStartCommand");
+        Timber.i("Worker Service onStartCommand");
         return START_NOT_STICKY;
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        Utils.log("Worker Service onBind");
+        Timber.i("Worker Service onBind");
         receiveMessenger = new Messenger(new IncomingHandler(this));
         return receiveMessenger.getBinder();
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Utils.log("Worker Service onUnbind");
+        Timber.i("Worker Service onUnbind");
         sendMessenger = null;
         return true;
     }
@@ -67,13 +67,13 @@ public class WorkerService extends Service {
     @Override
     public void onRebind(Intent intent) {
         super.onRebind(intent);
-        Utils.log("Worker Service onRebind");
+        Timber.i("Worker Service onRebind");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Utils.log("Worker Service destroyed");
+        Timber.i("Worker Service destroyed");
         this.bridge.shutdown();
     }
 

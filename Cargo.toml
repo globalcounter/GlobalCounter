@@ -1,5 +1,5 @@
 [package]
-name = "global-counter"
+name = "globalcounter"
 publish = false
 version = "0.0.0"
 description = "An Android fun app which allows users to increase/decrease a global counter value simultaneously."
@@ -27,3 +27,8 @@ android_logger = "0.8"
 lazy_static = "1.4"
 sendify = "1.1"
 num_cpus = "1.13.0"
+tokio-tungstenite = { version = "0.10", features = ["tls"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+reqwest = { version = "0.10", features = ["json"] }
+futures = "0.3"
