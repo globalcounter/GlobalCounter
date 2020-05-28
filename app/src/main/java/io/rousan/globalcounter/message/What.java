@@ -6,6 +6,7 @@ public final class What {
     public final static int INCREASE_COUNTER = 2;
     public final static int DECREASE_COUNTER = 3;
     public final static int ERROR = 4;
+    public final static int SNACK_BAR_MSG = 5;
 
     public static String toString(int what) {
         switch (what) {
@@ -23,6 +24,9 @@ public final class What {
             }
             case ERROR: {
                 return "ERROR";
+            }
+            case SNACK_BAR_MSG: {
+                return "SNACK_BAR_MSG";
             }
             default: {
                 return "<UNKNOWN>";

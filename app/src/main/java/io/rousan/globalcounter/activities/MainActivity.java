@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onBridgeMessage(int what, MessageData data) {
-        Timber.i("Got a message: what: %s", What.toString(what) );
+        Timber.i("Got a message: what: %s", What.toString(what));
 
         switch (what) {
             case What.COUNTER_VALUE: {
@@ -61,7 +62,17 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        showSnackbar(msg);
+                        showSnackbar(msg, false);
+                    }
+                });
+                return;
+            }
+            case What.SNACK_BAR_MSG: {
+                final String msg = data.getString("msg");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showSnackbar(msg, true);
                     }
                 });
                 return;
@@ -90,15 +101,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void showSnackbar(String msg) {
-        final Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_INDEFINITE);
-        snackbar.setAction("Close", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                snackbar.dismiss();
-            }
-        });
-        snackbar.show();
+    public void showSnackbar(String msg, boolean isSuccess) {
+        if (isSuccess) {
+            Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_SHORT)
+                    .show();
+        } else {
+            final Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction("Close", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                }
+            });
+            snackbar.show();
+        }
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {

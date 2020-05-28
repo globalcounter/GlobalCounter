@@ -1,5 +1,9 @@
-use crate::counter;
 use crate::types::WsMessage;
+use crate::{
+    bridge::{self, MessageData},
+    counter,
+    message::what,
+};
 use crate::{
     constants,
     counter::{publish_counter_value, send_error},
@@ -32,7 +36,6 @@ pub async fn start_daemon_ws_conn() {
         send_error(err.into_message());
         error!("WebSocket connection is closed, trying again");
         time::delay_for(Duration::from_secs(10)).await;
-        counter::fetch_and_publish_counter_value().await;
     }
 }
 
@@ -40,6 +43,13 @@ pub async fn try_ws_conn() -> crate::Result<()> {
     let (mut ws, _) = tokio_tungstenite::connect_async(constants::API_SERVER_ENDPOINT_WS_CONNECT)
         .await
         .context("Failed to create WebSocket connection from the API server")?;
+
+    bridge::send_message(
+        what::SNACK_BAR_MSG,
+        MessageData::new().put_string("msg", "Connected with API server"),
+    );
+
+    counter::fetch_and_publish_counter_value().await;
 
     while let Some(msg) = ws.next().await {
         let msg = match msg {
